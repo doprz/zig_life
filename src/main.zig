@@ -6,7 +6,7 @@ const Config = struct {
     width: usize = 60,
     height: usize = 40,
     tick_ms: u64 = 100, // in ms
-    initial_density: f32 = 0.5,
+    initial_density: f16 = 0.1,
 };
 
 pub fn main() !void {
@@ -14,7 +14,20 @@ pub fn main() !void {
     const allocator = gpa.allocator();
     defer _ = gpa.deinit();
 
-    const config = Config{};
+    var config = Config{};
+
+    if (terminal.getTermSize(std.fs.File.stdout())) |term_size| {
+        // Render 2 term chars per game cell for square pixels
+        config.width = term_size.width / 2;
+        config.height = term_size.height & ~@as(u16, 1); // Round down to closest even num
+        std.debug.print("Using terminal size: {}x{}\n", .{ term_size.width, term_size.height });
+    } else |err| {
+        std.debug.print("Could not get terminal size ({s}), using defaults: {}x{}\n", .{
+            @errorName(err),
+            config.width,
+            config.height,
+        });
+    }
 
     var grid = try core.Grid.init(allocator, .{
         .width = config.width,
@@ -29,10 +42,14 @@ pub fn main() !void {
     grid.randomize(seed, config.initial_density);
     grid.addGlider(5, 5);
 
-    const buffer_size = (config.width * config.height * 20);
-    var stdout_buffer: [buffer_size]u8 = undefined;
-    var stdout_writer = std.fs.File.stdout().writer(&stdout_buffer);
+    const buffer_size = config.width * config.height;
+    const stdout_buffer = try allocator.alloc(u8, buffer_size);
+    defer allocator.free(stdout_buffer);
+
+    var stdout_writer = std.fs.File.stdout().writer(stdout_buffer);
     const stdout = &stdout_writer.interface;
+
+    // std.Thread.sleep(1000 * std.time.ns_per_ms);
 
     var term = terminal.Terminal.init(stdout);
     try term.hideCursor();

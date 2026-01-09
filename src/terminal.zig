@@ -1,5 +1,37 @@
 const std = @import("std");
+const builtin = @import("builtin");
 const core = @import("core.zig");
+
+/// Terminal size measured in chars
+pub const TermSize = struct {
+    width: u16,
+    height: u16,
+};
+
+pub const TermSizeError = error{
+    Unsupported,
+    TerminalSizeUnavailable,
+};
+
+pub fn getTermSize(file: std.fs.File) TermSizeError!TermSize {
+    if (!file.supportsAnsiEscapeCodes()) {
+        return TermSizeError.Unsupported;
+    }
+
+    return switch (builtin.os.tag) {
+        .linux => {
+            var ws: std.posix.winsize = undefined;
+            const result = std.os.linux.ioctl(file.handle, std.posix.T.IOCGWINSZ, @intFromPtr(&ws));
+
+            if (result != 0) return TermSizeError.TerminalSizeUnavailable;
+            return .{
+                .width = ws.col,
+                .height = ws.row,
+            };
+        },
+        else => TermSizeError.Unsupported,
+    };
+}
 
 pub const Terminal = struct {
     writer: *std.Io.Writer,
