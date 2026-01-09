@@ -50,6 +50,7 @@ pub fn main() !void {
     const stdout = &stdout_writer.interface;
 
     // std.Thread.sleep(1000 * std.time.ns_per_ms);
+    // std.debug.print("Config: {}", .{config});
 
     var term = terminal.Terminal.init(stdout);
     try term.hideCursor();

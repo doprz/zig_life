@@ -13,6 +13,8 @@ pub const TermSizeError = error{
     TerminalSizeUnavailable,
 };
 
+/// Retrieves the terminal window size.
+/// Currently only supported on Linux systems with ANSI escape code support.
 pub fn getTermSize(file: std.fs.File) TermSizeError!TermSize {
     if (!file.supportsAnsiEscapeCodes()) {
         return TermSizeError.Unsupported;
@@ -33,6 +35,7 @@ pub fn getTermSize(file: std.fs.File) TermSizeError!TermSize {
     };
 }
 
+/// Terminal control operations using ANSI escape codes.
 pub const Terminal = struct {
     writer: *std.Io.Writer,
 
