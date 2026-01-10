@@ -3,7 +3,7 @@ import { getCellsArray, type CGOLWasm } from "./wasm";
 
 const CELL_SIZE = 10;
 const DENSITY = 0.1;
-const TICK_SPEED = 100; // in ms
+const TICK_MS = 100;
 
 interface Props {
   wasm: CGOLWasm;
@@ -59,7 +59,7 @@ export function GameOfLife({ wasm }: Props) {
           gridSize: `${gridSize.width}x${gridSize.height}`,
           cellsArrayPtr: wasm.getCellsPtr(),
           cellsArrayLen: wasm.getCellsLen(),
-          targetFps: 1000 / TICK_SPEED,
+          TICK_MS,
         };
         console.log("WASM initialized:", initInfo);
       }
@@ -102,7 +102,7 @@ export function GameOfLife({ wasm }: Props) {
     if (!initialized) return;
 
     const loop = (timestamp: number) => {
-      if (running && timestamp - lastStepRef.current >= TICK_SPEED) {
+      if (running && timestamp - lastStepRef.current >= TICK_MS) {
         wasm.step();
         lastStepRef.current = timestamp;
       }
