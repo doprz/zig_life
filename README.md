@@ -1,6 +1,6 @@
 # zig_life
 
-Conway's Game of Life in Zig with dual rendering build targets:
+Conway's Game of Life in Zig written in a weekend with dual build targets:
 - Terminal - Native executable with ANSI rendering
 - Web - WebAssembly + React with canvas rendering
 
@@ -51,7 +51,7 @@ src
 
 ### Responsive Sizing
 
-Both rendering targets support dynamic grid dimensions:
+Both build targets support dynamic grid dimensions:
 
 Terminal - On startup, the terminal size is queried via ioctl and calculates the maximum grid that fits within the available rows and columns.
 
