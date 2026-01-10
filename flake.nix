@@ -38,6 +38,7 @@
             packages = [
               zig
               pkgs.zls
+              pkgs.biome
             ];
           };
         };
