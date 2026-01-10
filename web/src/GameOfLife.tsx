@@ -51,9 +51,17 @@ export function GameOfLife({ wasm }: Props) {
         wasm.randomize(BigInt(Date.now()), DENSITY);
         setInitialized(true);
 
-        console.log(
-          `Initialized with grid size ${gridSize.width}x${gridSize.height}`,
-        );
+        const initInfo = {
+          wasmMemoryBytes: wasm.memory.buffer.byteLength,
+          wasmMemoryKiB: wasm.memory.buffer.byteLength / 1024,
+          wasmMemoryMiB: wasm.memory.buffer.byteLength / (1024 * 1024),
+          wasmMemoryPages: wasm.memory.buffer.byteLength / (1024 * 64), // 64KiB per page
+          gridSize: `${gridSize.width}x${gridSize.height}`,
+          cellsArrayPtr: wasm.getCellsPtr(),
+          cellsArrayLen: wasm.getCellsLen(),
+          targetFps: 1000 / TICK_SPEED,
+        };
+        console.log("WASM initialized:", initInfo);
       }
     }
 
