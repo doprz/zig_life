@@ -1,6 +1,6 @@
 # zig_life
 
-Conway's Game of Life in Zig written in a weekend with dual build targets:
+Conway's Game of Life in Zig written in a weekend with dual build targets and zero external dependencies:
 - Terminal - Native executable with ANSI rendering
 - Web - WebAssembly + React with canvas rendering
 
