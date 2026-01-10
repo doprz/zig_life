@@ -47,7 +47,7 @@ pub const Terminal = struct {
     }
 
     pub fn clear(self: *Self) !void {
-        try self.writer.writeAll(ESC ++ "[2J" ++ ESC ++ "[H");
+        try self.writer.writeAll(ESC ++ "[2J");
     }
 
     pub fn hideCursor(self: *Self) !void {
@@ -80,7 +80,7 @@ pub const Terminal = struct {
                     try self.setColor(37, 49); // White
                     try self.writer.writeAll("██");
                 } else {
-                    try self.setColor(39, 0); // Default
+                    try self.setColor(39, 49); // Default
                     try self.writer.writeAll("  ");
                 }
             }
