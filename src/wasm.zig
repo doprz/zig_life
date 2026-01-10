@@ -14,9 +14,20 @@ export fn init(width: u32, height: u32) bool {
 
     const size = width * height;
     wasm_scratch = allocator.alloc(core.Cell, size) catch return false;
-    // FIX: Make sure to free memory ouside of init
 
     return true;
+}
+
+export fn deinit() void {
+    if (wasm_grid) |*g| {
+        g.deinit(allocator);
+        wasm_grid = null;
+    }
+
+    if (wasm_scratch) |s| {
+        allocator.free(s);
+        wasm_scratch = null;
+    }
 }
 
 export fn getCellsPtr() ?[*]core.Cell {
