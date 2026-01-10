@@ -37,7 +37,6 @@ pub fn build(b: *std.Build) void {
     wasm.entry = .disabled;
     wasm.rdynamic = true;
 
-    // TODO: Install to web dir
     const install_wasm = b.addInstallArtifact(wasm, .{
         .dest_dir = .{ .override = .{ .custom = "../web/public" } },
     });
