@@ -56,6 +56,12 @@ export function GameOfLife({ wasm }: Props) {
         );
       }
     }
+
+    // Free up allocations
+    return () => {
+      wasm.deinit();
+      console.log("wasm.deinit() called");
+    };
   }, [wasm, gridSize]);
 
   const render = useCallback(() => {

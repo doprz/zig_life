@@ -3,6 +3,7 @@ export interface CGOLWasm {
 
   // Match exports in src/wasm.zig
   init(width: number, height: number): boolean;
+  deinit(): void;
   getCellsPtr(): number;
   getCellsLen(): number;
 
